@@ -1,4 +1,4 @@
-//Basic C example, It counts digit and sum of numbers.
+//It counts the number of digits and the sum of the digits.
 
 #include <stdio.h>
 
