@@ -6,6 +6,12 @@ int main(){
 	int n,i;
 	float numbers[n];
 	float sum=0;
+	char name[10];
+	
+	printf("Enter the Name:");
+	scanf("%s",name);                       //This is important because We didn't use & before name.
+	
+	printf("Hi! %s\n",name);
 	
 	printf("Enter the number of array:");
 	scanf("%d",&n);
