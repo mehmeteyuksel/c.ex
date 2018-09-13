@@ -1,0 +1,145 @@
+#include <LiquidCrystal.h>    
+
+LiquidCrystal lcd(12,11,5,4,3,2);        //We descriptions lcd pins.
+
+int photoe = A1;
+int valphoto;
+int heat_sens = A0;
+int valheat=0;
+int led = 13;
+int relay = 13;
+
+void setup() {
+  
+  
+  Serial.begin(9600);   //Serial ports are beginning.
+  
+  analogReference(INTERNAL);    //This settings that LM35pin output.
+  
+  pinMode(photoe,INPUT); 
+  pinMode(led,OUTPUT);
+  pinMode(relay,OUTPUT);
+  
+  lcd.begin(16,2);
+  lcd.setCursor(0,1);
+  lcd.print("Sicaklik:");
+
+  
+  //TIMERS SETUP BEGİN
+  noInterrupts();           // disable all interrupts
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TCNT1  = 0;
+
+  OCR1A = 31250;            // compare match register 16MHz/256/2Hz
+  TCCR1B |= (1 << WGM12);   // CTC mode
+  TCCR1B |= (1 << CS12);    // 256 prescaler 
+  TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt
+
+  TCCR2A = 0;
+  TCCR2B = 0;
+  TCNT2  = 0;
+
+  OCR2A = 31250;            // compare match register 16MHz/256/2Hz
+  TCCR2B |= (1 << WGM22);   // CTC mode
+  TCCR2B |= (1 << CS22);    // 256 prescaler 
+  TIMSK2 |= (1 << OCIE2A);  // enable timer compare interrupt
+  interrupts();  
+  //TIMERS SETUP END
+  
+}
+
+//TIMERS FUNCTION
+//For Timer1
+ISR(TIMER1_COMPA_vect){
+    
+  valheat= analogRead(heat_sens);
+  double heatC= heatC = valheat /10.0;
+  
+  lcd.setCursor(9,1);
+  lcd.print(heatC);
+  lcd.print("\337C");
+  
+  
+}
+
+ISR(TIMER2_COMPA_vect){
+
+  valphoto = digitalRead(photoe);
+  
+  if(valphoto == 0){
+    digitalWrite(led,HIGH);
+    lcd.setCursor(0,0);
+    lcd.print("Cok Yakinsin");
+    
+  }
+  else{
+    digitalWrite(led,LOW);
+  }
+}
+
+
+void startblink(int temp=0){
+
+    int i = temp;
+    for(int i=temp; i<5; i++){
+    digitalWrite(led,HIGH);
+    delay(500);
+    temp +=1;
+    return temp;
+    
+  }
+}
+
+void loop() {
+  
+  startblink(2);
+    
+  Serial.print(valphoto);
+  Serial.print("-");
+  Serial.println(valheat);
+
+  slide();
+
+
+  return 0;
+
+}
+
+ int slide(){
+    lcd.setCursor(0,0);
+    lcd.print("Guvenli     ");
+  // scroll 13 positions (string length) to the left
+  // to move it offscreen left
+  
+
+
+  for (int positionCounter = 0; positionCounter < 11; positionCounter++) {
+    // scroll one position left:
+    lcd.scrollDisplayLeft();
+    // wait a bit:
+    delay(200);
+  }
+
+  // scroll 29 positions (string length + display length) to the right
+  // to move it offscreen right:
+  for (int positionCounter = 0; positionCounter < 23; positionCounter++) {
+    // scroll one position right:
+    lcd.scrollDisplayRight();
+    // wait a bit:
+    delay(200);
+  }
+
+  // scroll 16 positions (display length + string length) to the left
+  // to move it back to center:
+  for (int positionCounter = 0; positionCounter < 12; positionCounter++) {
+    // scroll one position left:
+    lcd.scrollDisplayLeft();
+    // wait a bit:
+    delay(200);
+  }
+  
+  delay(1000);
+  
+ }
+
