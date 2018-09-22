@@ -1,0 +1,75 @@
+//This programme: If led1 turn on, led2 turn off and Seven Segment Display print it which led. We controls leds with button.
+
+int buttonPin = 2;     // the number of the pushbutton pin
+int ledPin1 =  3;
+int ledPin2 = 5;
+
+int aa=13;              //the numbers of seven segment displays
+int bb=12;
+int cc=11;
+int dd=10;
+int ee=9;
+int ff=8;
+int gg=7;
+
+// the number of the LED pin
+
+// variables will change:
+int buttonState = 0;         // variable for reading the pushbutton status
+
+void setup() {
+  Serial.begin(9600);
+  // initialize the LED pin as an output:
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  //initialize the seven segment display pins as an output:
+  pinMode(aa,OUTPUT);
+  pinMode(bb,OUTPUT);
+  pinMode(cc,OUTPUT);
+  pinMode(dd,OUTPUT);
+  pinMode(ee,OUTPUT);
+  pinMode(ff,OUTPUT);
+  pinMode(gg,OUTPUT);
+  
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
+}
+
+void loop() {
+  // read the state of the pushbutton value:
+  buttonState = digitalRead(buttonPin);
+
+  //print the buttonState at Serial Port Screen:
+  Serial.println(buttonState);
+  delay(250);
+
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == HIGH) {
+    // turn LED on:
+    digitalWrite(ledPin1, HIGH);
+    digitalWrite(ledPin2, LOW);
+
+    // turn seven segment display and print 1 for ledpin1:
+    digitalWrite(aa, HIGH);
+    digitalWrite(bb, LOW);
+    digitalWrite(cc, LOW);
+    digitalWrite(dd, HIGH);
+    digitalWrite(ee, HIGH);
+    digitalWrite(ff, HIGH);
+    digitalWrite(gg, HIGH);
+  } else {
+    // turn LED off:
+    digitalWrite(ledPin1, LOW);
+    digitalWrite(ledPin2, HIGH);
+
+    // turn seven segment display and print 2 for ledpin2:
+    digitalWrite(aa, LOW);
+    digitalWrite(bb, LOW);
+    digitalWrite(cc, HIGH);
+    digitalWrite(dd, LOW);
+    digitalWrite(ee, LOW);
+    digitalWrite(ff, HIGH);
+    digitalWrite(gg, LOW);
+  }
+  return 0;
+}
